@@ -493,7 +493,7 @@
           // tags
           if (state.tags.size) {
             for (const tag of state.tags) {
-              const val = tagVal(r, tag);
+              const val = r[tag]; // Use the tag directly as a column name
               if (!isYes(val)) return false;
             }
           }
