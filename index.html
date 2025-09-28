@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8" />
+    <title>Katalog školních projektů</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --card: #121822;
+        --muted: #9fb0c3;
+        --txt: #eaf2fb;
+        --accent: #7cc6ff;
+        --ok: #34d399;
+        --no: #ef4444;
+        --chip: #1b2431;
+        --chipb: #2b394d;
+        --bd: #233044;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: linear-gradient(180deg, #091018, #0b0f14 40%, #0b0f14 100%);
+        color: var(--txt);
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(10px);
+        background: linear-gradient(
+          180deg,
+          rgba(9, 16, 24, 0.9),
+          rgba(9, 16, 24, 0.6)
+        );
+        border-bottom: 1px solid var(--bd);
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      h1 {
+        font-size: clamp(20px, 2.6vw, 30px);
+        margin: 0 0 6px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 10px;
+        margin-top: 14px;
+        align-items: end;
+      }
+      @media (max-width: 900px) {
+        .controls {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 520px) {
+        .controls {
+          grid-template-columns: 1fr;
+        }
+      }
+      label {
+        font-size: 12px;
+        color: var(--muted);
+        display: block;
+        margin: 0 0 6px;
+      }
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        background: #0e141d;
+        color: var(--txt);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        outline: none;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chip {
+        background: linear-gradient(180deg, var(--chip), var(--chipb));
+        border: 1px solid var(--bd);
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .chip[data-active="true"] {
+        outline: 2px solid var(--accent);
+        color: #e8f6ff;
+      }
+      main {
+        padding: 22px 16px;
+      }
+      .grid {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      @media (max-width: 1000px) {
+        .grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 640px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        background: linear-gradient(180deg, #121822, #0f1722);
+        border: 1px solid var(--bd);
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+      }
+      .title {
+        font-weight: 700;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .badge {
+        border: 1px solid var(--bd);
+        background: #0e141d;
+        padding: 4px 8px;
+        border-radius: 8px;
+      }
+      .desc {
+        color: #cfe2fb;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+      .suit {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #0e141d;
+        border: 1px solid var(--bd);
+        padding: 8px 10px;
+        border-radius: 10px;
+      }
+      .ok,
+      .no {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+      }
+      .ok {
+        color: var(--ok);
+      }
+      .no {
+        color: var(--no);
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .link {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 13px;
+      }
+      .pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #0e141d;
+        border: 1px solid var(--bd);
+        font-size: 12px;
+      }
+      .topbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+      .sheetlink {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .empty {
+        max-width: 1100px;
+        margin: 30px auto;
+        color: var(--muted);
+        text-align: center;
+      }
+      .small {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .srch {
+        display: flex;
+        gap: 10px;
+      }
+      button {
+        background: #0e141d;
+        border: 1px solid var(--bd);
+        color: var(--txt);
+        border-radius: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: #395276;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>Katalog školních projektů</h1>
+        <div class="topbar">
+          <div class="sub">
+            Čte se přímo z Google Sheets a zobrazuje jako karty s filtry.
+          </div>
+          <a
+            class="sheetlink"
+            target="_blank"
+            rel="noreferrer"
+            href="https://docs.google.com/spreadsheets/d/1GWnNKz-aMUFnnReWDlurB5cfzD-6yy5-09K5tu8v-YU/edit?gid=0#gid=0"
+            >↗ Otevřít tabulku</a
+          >
+        </div>
+        <div class="controls">
+          <div>
+            <label>Hledat</label>
+            <input
+              id="q"
+              type="text"
+              placeholder="Název / popis / učitel / předmět…"
+            />
+          </div>
+          <div>
+            <label>Předmět</label>
+            <select id="subject">
+              <option value="">— Vše —</option>
+            </select>
+          </div>
+          <div>
+            <label>Učitel</label>
+            <select id="teacher">
+              <option value="">— Všichni —</option>
+            </select>
+          </div>
+          <div>
+            <label>Vhodnost</label>
+            <div class="chips" id="chips">
+              <div class="chip" data-key="Projekt DIGI 4.A">DIGI 4.A</div>
+              <div class="chip" data-key="Projekt  3.ročník">3. ročník</div>
+              <div class="chip" data-key="SOČ">SOČ</div>
+              <div class="chip" data-key="Maturitní IT">Maturitní IT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" style="display: none">
+        Nic nenalezeno. Změň filtr nebo zkus jiné hledání.
+      </div>
+      <div class="wrap small">
+        Tip: pokud se data nenačtou, nastav sdílení listu na
+        <em>Anyone with the link – Viewer</em>.
+      </div>
+    </main>
+
+    <script>
+      // === Konfigurace =========================
+      const SHEET_ID = "1GWnNKz-aMUFnnReWDlurB5cfzD-6yy5-09K5tu8v-YU"; // změň dle potřeby
+      const GID = "0"; // id listu
+      // Google Visualization API endpoint (vrací JSON zabalený v JS funkci)
+      const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
+
+      // mapování názvů sloupců – musí přesně sedět na hlavičky v tabulce
+      const COLS = {
+         url: "URL", // nový sloupec
+        title: "Název projektu",
+        desc: "Krátký popis",
+        subject: "Předmět",
+        teacher: "Učitel",
+        d4a: "Projekt DIGI 4.A",
+        r3: "Projekt  3.ročník",
+        soc: "SOČ",
+        m_it: "Maturitní IT",
+        mod: "Modifikace podle obtížnosti",
+      };
+
+      // Fallback (když není přístup k listu) – zkusíme načíst až pak spadneme na fallback
+      const FALLBACK = [
+        {
+          [COLS.title]: "🎙 Podcast: od nápadu po značku",
+          [COLS.desc]:
+            "Projekt zaměřený na tvorbu školního či osobního podcastu – od přípravy témat až po propagaci.",
+          [COLS.subject]: "IT",
+          [COLS.teacher]: "Adam Ferencz",
+          [COLS.d4a]: "✅ Ano",
+          [COLS.r3]: "✅ Ano",
+          [COLS.soc]: "❌ Ne",
+          [COLS.m_it]: "❌ Ne",
+          [COLS.mod]: "Nižší ročník: 2–3 epizody. 3. ročník: série ~10 epizod.",
+        },
+      ];
+
+      // === Stav UI =============================
+      const state = {
+        query: "",
+        subject: "",
+        teacher: "",
+        tags: new Set(), // DIGI 4.A / 3. ročník / SOČ / Maturitní IT
+        rows: [],
+        subjects: new Set(),
+        teachers: new Set(),
+      };
+
+      // === Init ================================
+      init();
+      async function init() {
+        const data = await loadFromSheet().catch(() => null);
+        console.log("Data:", data);
+        state.rows = data && data.length ? data : FALLBACK;
+        buildFilters(state.rows);
+        render();
+        bindEvents();
+      }
+
+      // === Načtení z GViz ======================
+      async function loadFromSheet() {
+        const res = await fetch(GVIZ_URL);
+        const txt = await res.text();
+
+        // Odstraníme "/*O_o*/\ngoogle.visualization.Query.setResponse(...);"
+        const json = JSON.parse(
+          txt.replace(/^[\s\S]*?\(/, "").replace(/\);\s*$/, "")
+        );
+        const table = json.table;
+
+        // Hlavičky bereme z prvního řádku
+        const headerRow = table.rows[0].c.map((c) => (c?.v || "").trim());
+        console.log("Detected headers:", headerRow);
+
+        // Mapování názvů → index
+        const idx = {};
+        headerRow.forEach((h, i) => (idx[h] = i));
+        console.log("Header index mapping:", idx);
+
+        // Data = od druhého řádku dál
+        const rows = table.rows
+          .slice(1)
+          .map((r, ri) => {
+            const get = (colName) => {
+              const i = idx[colName];
+              if (i == null) return "";
+              const cell = r.c[i];
+              return cell ? cell.f ?? cell.v ?? "" : "";
+            };
+            const rowObj = {
+              [COLS.url]: get(COLS.url),
+              [COLS.title]: get(COLS.title),
+              [COLS.desc]: get(COLS.desc),
+              [COLS.subject]: get(COLS.subject),
+              [COLS.teacher]: get(COLS.teacher),
+              [COLS.d4a]: get(COLS.d4a),
+              [COLS.r3]: get(COLS.r3),
+              [COLS.soc]: get(COLS.soc),
+              [COLS.m_it]: get(COLS.m_it),
+              [COLS.mod]: get(COLS.mod),
+            };
+            console.log("Row", ri + 1, rowObj);
+            return rowObj;
+          })
+          .filter((r) => r[COLS.title]); // jen ty s názvem
+
+        return rows;
+      }
+
+      // === UI – filtry =========================
+      function buildFilters(rows) {
+        rows.forEach((r) => {
+          if (r[COLS.subject]) state.subjects.add(r[COLS.subject]);
+          if (r[COLS.teacher]) state.teachers.add(r[COLS.teacher]);
+        });
+        fillSelect(
+          document.getElementById("subject"),
+          Array.from(state.subjects).sort()
+        );
+        fillSelect(
+          document.getElementById("teacher"),
+          Array.from(state.teachers).sort()
+        );
+      }
+
+      function fillSelect(sel, items) {
+        items.forEach((v) => {
+          const opt = document.createElement("option");
+          opt.value = v;
+          opt.textContent = v;
+          sel.appendChild(opt);
+        });
+      }
+
+      function bindEvents() {
+        document.getElementById("q").addEventListener("input", (e) => {
+          state.query = e.target.value.toLowerCase();
+          render();
+        });
+        document.getElementById("subject").addEventListener("change", (e) => {
+          state.subject = e.target.value;
+          render();
+        });
+        document.getElementById("teacher").addEventListener("change", (e) => {
+          state.teacher = e.target.value;
+          render();
+        });
+        document.getElementById("chips").addEventListener("click", (e) => {
+          const chip = e.target.closest(".chip");
+          if (!chip) return;
+          const key = chip.dataset.key;
+          const active = chip.getAttribute("data-active") === "true";
+          chip.setAttribute("data-active", active ? "false" : "true");
+          if (active) {
+            state.tags.delete(key);
+          } else {
+            state.tags.add(key);
+          }
+          render();
+        });
+      }
+
+      // === Render ==============================
+      function render() {
+        const grid = document.getElementById("grid");
+        const empty = document.getElementById("empty");
+        grid.innerHTML = "";
+
+        const filtered = state.rows.filter((r) => {
+          // query
+          const q = state.query;
+          const blob = [
+            r[COLS.title],
+            r[COLS.desc],
+            r[COLS.subject],
+            r[COLS.teacher],
+            r[COLS.mod],
+          ]
+            .join(" ")
+            .toLowerCase();
+          if (q && !blob.includes(q)) return false;
+
+          // subject / teacher
+          if (state.subject && r[COLS.subject] !== state.subject) return false;
+          if (state.teacher && r[COLS.teacher] !== state.teacher) return false;
+
+          // tags
+          if (state.tags.size) {
+            for (const tag of state.tags) {
+              const val = tagVal(r, tag);
+              if (!isYes(val)) return false;
+            }
+          }
+          return true;
+        });
+
+        if (!filtered.length) {
+          empty.style.display = "block";
+          return;
+        } else {
+          empty.style.display = "none";
+        }
+
+        for (const r of filtered) {
+          grid.appendChild(card(r));
+        }
+      }
+
+      function card(r){
+        const el = document.createElement('article');
+        el.className = 'card';
+        el.innerHTML = `
+          <div class="title">${escapeHTML(r[COLS.title] || '')}</div>
+          <div class="meta">
+            <span class="badge">📘 ${escapeHTML(r[COLS.subject] || '—')}</span>
+            <span class="badge">👤 ${escapeHTML(r[COLS.teacher] || '—')}</span>
+          </div>
+          <div class="desc">${escapeHTML(r[COLS.desc] || '')}</div>
+          <div class="suit">
+            ${suitRow("DIGI 4.A", r[COLS.d4a])}
+            ${suitRow("3. ročník", r[COLS.r3])}
+            ${suitRow("SOČ", r[COLS.soc])}
+            ${suitRow("Maturitní IT", r[COLS.m_it])}
+          </div>
+          <div class="footer">
+            <span class="pill">🛠 Modifikace:</span>
+            <span class="muted" style="flex:1">${escapeHTML((r[COLS.mod]||'').replace(/\n/g,' '))}</span>
+          </div>
+          ${r[COLS.url] ? `<a class="link" target="_blank" href="${escapeHTML(r[COLS.url])}">📂 Otevřít podrobnosti</a>` : ""}
+        `;
+        return el;
+      }
+
+
+      function suitRow(label, val) {
+        const yes = isYes(val);
+        const icon = yes ? okIcon() : noIcon();
+        const cls = yes ? "ok" : "no";
+        const text = yes ? "Ano" : "Ne";
+        return `
+        <div class="row">
+          <span class="${cls}">${icon} ${text}</span>
+          <span class="muted">${label}</span>
+        </div>
+      `;
+      }
+
+      function isYes(v) {
+        if (!v) return false;
+        const s = String(v).trim().toLowerCase();
+        return (
+          s.includes("✅") ||
+          s === "ano" ||
+          s === "✓" ||
+          s === "yes" ||
+          s === "true"
+        );
+      }
+
+      function okIcon() {
+        return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M20 7L9 18l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
+      }
+      function noIcon() {
+        return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>`;
+      }
+
+      function escapeHTML(s) {
+        return (s || "").replace(
+          /[&<>"']/g,
+          (m) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[m])
+        );
+      }
+    </script>
+  </body>
+</html>
